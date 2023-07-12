@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tool Cost Estimator</title>
+  <style>
+    /* Header Styling */
+    header {
+      background-color: #ffffffb1;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      padding: 5px 10px;
+    }
+
+    /* Body Styling */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('/static/Ronin.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    p {
+      color: #ddd;
+    }
+
+    .button-container {
+      margin-top: 20px;
+    }
+
+    .button-container button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 4px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button-container button:hover {
+      background-color: #45a049;
+    }
+
+    /* Logo Styling */
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+    <img class="logo" src='/static/logo.png' alt="Tool Cost Estimator Logo">
+  </header>
+  <div class="container">
+    <div class="overlay">
+      <h1>Welcome to the Tool Cost Estimator</h1>
+      <p>Select an option below:</p>
+      <div class="button-container">
+        <button onclick="redirectToInjectionMoulding()">Injection Moulding</button>
+        <!-- <button onclick="redirectToDieCasting()">Die Casting</button> -->
+        <button onclick="redirectToDatabaseUpdate()">Database Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function redirectToInjectionMoulding() {
+      window.location.href = "/injectionmoulding";
+    }
+
+    function redirectToDieCasting() {
+      window.location.href = "https://example.com/die-casting";
+    }
+
+    function redirectToDatabaseUpdate() {
+      window.location.href = "/database";
+    }
+  </script>
+</body>
+</html>

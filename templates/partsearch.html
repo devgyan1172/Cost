@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>New Part Entry</title>
+  <style>
+    body {
+     margin: 0;
+     font-family: Arial, sans-serif;
+     background-image: url("C:/Users/Dev Gyan Priyadarshi/Desktop/TVSM OFFICE/Tool Cost Estimator Program/Logo and Image/Ronin.jpg");
+     background-size: cover;
+     background-position: center;
+    
+   }
+   body {
+     font-family: Arial, sans-serif;
+     margin: 0;
+     padding: 0;
+   }
+
+   header {
+     background-color: #333;
+     color: #fff;
+     padding: 10px;
+   }
+
+   nav ul {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+   }
+
+   nav ul li {
+     display: inline-block;
+     margin-right: 10px;
+   }
+
+   nav ul li a {
+     color: #fff;
+     text-decoration: none;
+   }
+
+   main {
+     max-width: 800px;
+     margin: 20px auto;
+     padding: 20px;
+   }
+
+   h1 {
+     font-size: 24px;
+     margin-bottom: 20px;
+   }
+
+   form {
+     margin-bottom: 20px;
+   }
+
+   label {
+     display: block;
+     margin-bottom: 5px;
+   }
+
+   input[type="text"], select {
+     width: 100%;
+     padding: 10px;
+     margin-bottom: 10px;
+   }
+
+   button {
+     padding: 10px 20px;
+     font-size: 16px;
+     background-color: #4CAF50;
+     color: #fff;
+     border: none;
+     cursor: pointer;
+     margin-right: 10px;
+   }
+ </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>New Part Entry</h1>
+
+    <form id="newPartForm">
+      <label for="partNumber">Part Number:</label>
+      <input type="text" id="partNumber" name="partNumber" required>
+
+      <!-- Other form fields -->
+
+    </form>
+
+    <button onclick="updateData()">Update Data</button>
+    <button onclick="partSearch()">Part Search</button>
+
+    <div id="partDetails" style="display: none;">
+      <h2>Part Details</h2>
+      <p id="partName"></p>
+      <p id="length"></p>
+      <p id="width"></p>
+      <p id="height"></p>
+      <p id="complexity"></p>
+      <p id="cavity"></p>
+    </div>
+  </main>
+
+  <script>
+    function partSearch() {
+      // Retrieve the part number
+      var partNumber = document.getElementById("partNumber").value;
+
+      // Send an HTTP POST request to the part_search endpoint
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/part_search", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      // Set the part number as the request body
+      var data = JSON.stringify({ partNumber: partNumber });
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // Request successful, display the response message
+          var response = JSON.parse(xhr.responseText);
+          displayPartDetails(response);
+        } else if (xhr.readyState === 4 && xhr.status === 400) {
+          // Request failed, display the error message
+          var response = JSON.parse(xhr.responseText);
+          alert(response.message);
+        }
+      };
+
+      // Send the request
+      xhr.send(data);
+    }
+
+    function displayPartDetails(partData) {
+  // Display the part details in the HTML elements
+  document.getElementById("partDetails").style.display = "block";
+  document.getElementById("partName").textContent = "Part Name: " + partData["Part Name"];
+  document.getElementById("length").textContent = "Length (mm): " + partData["Length"];
+  document.getElementById("width").textContent = "Width (mm): " + partData["Width"];
+  document.getElementById("height").textContent = "Height (mm): " + partData["Height"];
+  document.getElementById("complexity").textContent = "Complexity: " + partData["Complexity"];
+  document.getElementById("cavity").textContent = "Cavity: " + partData["Cavity"];
+}
+
+
+    function updateData() {
+      // Retrieve the form values
+      var partNumber = document.getElementById("partNumber").value;
+      var partName = document.getElementById("partName").value;
+      var length = document.getElementById("length").value;
+      var width = document.getElementById("width").value;
+      var height = document.getElementById("height").value;
+      var complexity = document.getElementById("complexity").value;
+      var cavity = document.getElementById("cavity").value;
+
+      // Perform data validation
+      if (partNumber && partName && length && width && height && complexity && cavity) {
+          // Send an HTTP POST request to update_data endpoint
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/update_data", true);
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+          // Set the form data as the request body
+          var data = "partNumber=" + encodeURIComponent(partNumber) +
+              "&partName=" + encodeURIComponent(partName) +
+              "&length=" + encodeURIComponent(length) +
+              "&width=" + encodeURIComponent(width) +
+              "&height=" + encodeURIComponent(height) +
+              "&complexity=" + encodeURIComponent(complexity) +
+              "&cavity=" + encodeURIComponent(cavity);
+
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                  // Request successful, display the response message
+                  var response = JSON.parse(xhr.responseText);
+                  alert(response.message);
+              } else if (xhr.readyState === 4 && xhr.status === 400) {
+                  // Request failed, display the error message
+                  var response = JSON.parse(xhr.responseText);
+                  alert(response.message);
+              }
+          };
+
+          // Send the request
+          xhr.send(data);
+
+          // Clear the form fields
+          document.getElementById("partNumber").value = "";
+          document.getElementById("partName").value = "";
+          document.getElementById("length").value = "";
+          document.getElementById("width").value = "";
+          document.getElementById("height").value = "";
+          document.getElementById("complexity").value = "";
+          document.getElementById("cavity").value = "";
+      } else {
+          alert("Please fill in all the required fields.");
+      }
+    }
+
+    
+  </script>
+</body>
+</html>

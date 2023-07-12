@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cavity Calculation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background-color: #333;
+      padding: 10px;
+    }
+    .header img {
+      height: 50px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+  <script>
+    function calculate() {
+      var dailyRequirements = document.getElementById("dailyRequirements").value;
+      var hoursPerShift = document.getElementById("hoursPerShift").value;
+      var numberOfShifts = document.getElementById("numberOfShifts").value;
+      var numberOfMachines = document.getElementById("numberOfMachines").value;
+      var material = document.getElementById("material").value;
+      var thickness = document.getElementById("thickness").value;
+        // Validate the form input values
+        if (!dailyRequirements || !hoursPerShift || !numberOfShifts || !numberOfMachines || !material || !thickness) {
+                alert("Please fill in all the required fields.");
+                return;
+              }
+      // Create a data object with the form values
+      var formdata = {
+        dailyRequirements: dailyRequirements,
+        hoursPerShift: hoursPerShift,
+        numberOfShifts: numberOfShifts,
+        numberOfMachines: numberOfMachines,
+        material: material,
+        thickness: thickness
+      };
+
+      // Send a POST request to the server to calculate the number of cavities
+      fetch("http://localhost:5000/cavity/calculate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formdata)
+      })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          // Update the output div with the calculated number of cavities
+          document.getElementById("output").innerHTML = "Number of Cavity: " + data.numberOfCavity;
+        })
+        .catch(function(error) {
+          // Handle errors
+          console.error("An error occurred:", error);
+        });
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <img src="C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Logo and Image\TVS_logo.png" alt="TVS Logo">
+  </div>
+
+  <h1>Cavity Calculation</h1>
+
+  <form id="cavityForm">
+    <label for="dailyRequirements">Daily Requirements:</label>
+    <input type="number" id="dailyRequirements" required>
+
+    <label for="hoursPerShift">Hours per Shift:</label>
+    <input type="number" id="hoursPerShift" required>
+
+    <label for="numberOfShifts">Number of Shifts:</label>
+    <input type="number" id="numberOfShifts" required>
+
+    <label for="numberOfMachines">Number of Machines:</label>
+    <input type="number" id="numberOfMachines" required>
+
+    <label for="material">Material:</label>
+    <select id="material" required>
+      <option value="ABS">ABS</option>
+      <option value="PS">PS</option>
+      <option value="PE">PE</option>
+      <option value="PA-unfilled-dupont">PA-unfilled-dupont</option>
+      <option value="PC">PC</option>
+      <option value="POM">POM</option>
+      <option value="PP">PP</option>
+      <option value="Nylon-srf">Nylon-srf</option>
+      <option value="Glass fiber-Plain">Glass fiber-Plain</option>
+    </select>
+
+    <label for="thickness">Thickness (mm):</label>
+    <select id="thickness" required>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+
+    <button type="button" onclick="calculate()">Calculate</button>
+
+  </form>
+
+  <div id="output">
+    Number of Cavity: { numberOfCavity }
+  </div>
+
+
+  <div class="footer">
+    &copy; 2023 TVS Motors. Designed by Dev Gyan Priyadarshi.
+  </div>
+
+</body>
+</html>

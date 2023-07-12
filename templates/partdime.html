@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Part Dimensions</title>
+  <style>
+    /* Body Styling */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("C:/Users/Dev Gyan Priyadarshi/Desktop/TVSM OFFICE/Tool Cost Estimator Program/Logo and Image/Ronin.jpg");
+      background-size: cover;
+      background-position: center;
+      padding-top: 80px; /* Add padding-top to body to account for fixed header */
+      background-attachment: fixed; /* Keep the background image fixed */
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background-color: #170051;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .header a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 80%;
+      margin: 0 auto;
+      margin-top: 100px;
+    }
+
+    form label,
+    form input,
+    form select,
+    form button,
+    form checkbox {
+      margin-bottom: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    form input,
+    form select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form button {
+      padding: 10px 117px;
+      background-color: #170051;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    form button:hover {
+      background-color: #005114;
+    }
+
+    .form-group {
+      display: block;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .hyperlink {
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 11px; /* Adjust the font size as desired */
+      text-align: right; /* Adjust the text alignment as desired */
+    }
+  </style>
+  <script>
+    function toggleHotRunnerPrice() {
+      const hotRunnerSelect = document.getElementById("hot_runner");
+      const hotRunnerPriceDiv = document.getElementById("hot_runner_price");
+
+      if (hotRunnerSelect.value === "yes") {
+        hotRunnerPriceDiv.style.display = "block";
+      } else {
+        hotRunnerPriceDiv.style.display = "none";
+      }
+    }
+  </script>
+  <script>
+     function submitForm() {
+      // Get the form input values
+      var length = document.getElementById("length").value;
+      var width = document.getElementById("width").value;
+      var height = document.getElementById("height").value;
+      var cavity = document.getElementById("cavity").value;
+      var complexity = document.getElementById("complexity").value;
+      var hotRunner = document.getElementById("hot_runner").value;
+      var hotRunnerPrice = document.getElementById("hot_runner_price_input").value;
+      var mouldFlowAnalysis = document.getElementById("mould_flow_analysis").checked;
+      var texturing = document.getElementById("texturing").checked;
+      var heatTreatment = document.getElementById("heat_treatment").checked;
+      var polishing = document.getElementById("polishing").checked;
+
+      // Validate the form input values
+      if (!length || !width || !height || !cavity || !complexity) {
+        alert("Please fill in all the required fields.");
+        return;
+      }
+
+      // Create an object with the form data
+      var formData = {
+        length: length,
+        width: width,
+        height: height,
+        cavity: cavity,
+        complexity: complexity,
+        hotRunner: hotRunner,
+        hotRunnerPrice: hotRunnerPrice,
+        mouldFlowAnalysis: mouldFlowAnalysis,
+        texturing: texturing,
+        heatTreatment: heatTreatment,
+        polishing: polishing
+      };
+
+      // Send a POST request to the server to save the form data
+      fetch("partdime/save_data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          alert(data.message);
+          window.location.href = '/partdime/save_data/estimate';
+        })
+        .catch(function (error) {
+          alert("An error occurred while saving the form data: " + error);
+          window.location.href = '/partdime/save_data/estimate';
+        });
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <h1>Tool Cost Estimator</h1>
+  </div>
+
+  <form>
+    <div class="form-group">
+      <label for="length">Length (in mm):</label>
+      <input type="text" id="length" name="length" pattern="[0-9]+([.][0-9]+)?" required>
+    </div>
+
+    <div class="form-group">
+      <label for="width">Width (in mm):</label>
+      <input type="text" id="width" name="width" pattern="[0-9]+([.][0-9]+)?" required>
+    </div>
+
+    <div class="form-group">
+      <label for="height">Height(mm):</label>
+      <input type="text" id="height" name="height"  pattern="[0-9]+([.][0-9]+)?" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cavity">Cavity:</label>
+      <select id="cavity" name="cavity" required>
+        <option value="">Select no of cavity</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+        <option value="8">8</option>
+      </select>
+      <p class="hyperlink">
+        <a href="/cavity" target="_blank">Click here to calculate cavity</a>
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label for="complexity">Complexity:</label>
+      <select id="complexity" name="complexity" required>
+        <option value="">Select Complexity</option>
+        <option value="0.5">0.5</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <p class="hyperlink">
+        <a href="comp_guid" target="_blank">Click here for factor details</a>
+      </p>
+    </div>
+
+    <div>
+      <label for="hot_runner">Hot Runner:</label>
+      <select id="hot_runner" name="hot_runner" onchange="toggleHotRunnerPrice()" required>
+        <option value="">Select Hot Runner</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <div id="hot_runner_price" style="display: none;">
+        <label for="hot_runner_price_input">Hot Runner Price:</label>
+        <input type="text" id="hot_runner_price_input" name="hot_runner_price_input" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="mould_flow_analysis">Mould Flow Analysis:</label>
+      <input type="checkbox" id="mould_flow_analysis" name="mould_flow_analysis">
+    </div>
+
+    <div class="form-group">
+      <label for="texturing">Texturing:</label>
+      <input type="checkbox" id="texturing" name="texturing">
+    </div>
+
+    <div class="form-group">
+      <label for="heat_treatment">Heat Treatment:</label>
+      <input type="checkbox" id="heat_treatment" name="heat_treatment">
+    </div>
+
+    <div class="form-group">
+      <label for="polishing">Polishing:</label>
+      <input type="checkbox" id="polishing" name="polishing">
+    </div>
+    <button type="button" onclick="submitForm()">Submit</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Database</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Database Update Portal</h1>
+
+    <div>
+      <button onclick="handleMaterialUpdate()">Material Update</button>
+      <button onclick="handleMachiningUpdate()">Machining Update</button>
+      <button onclick="handleNewPartEntry()">New Part Entry</button>
+    </div>
+
+  </main>
+
+  <script>
+    function handleMaterialUpdate() {
+      window.location.href = "/database/materialupdate"
+    }
+
+    function handleMachiningUpdate() {
+      window.location.href = "/MachiningUpdate"
+    }
+
+    function handleNewPartEntry() {
+        window.location.href = "/partentry"
+    }
+  </script>
+</body>
+</html>

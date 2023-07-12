@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Injection Moulding Estimator</title>
+  <style>
+    /* CSS styling */
+
+    /* Header Styling */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffffb1;
+      padding: 20px;
+      text-align: center;
+      z-index: 9999;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      padding: 5px 10px;
+    }
+
+    /* Body Styling */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('/static/ronin.jpg');
+      background-size: cover;
+      background-position: center;
+      padding-top: 80px; /* Add padding-top to body to account for fixed header */
+      background-attachment: fixed; /* Keep the background image fixed */
+    }
+
+    header h1 {
+      color: #000000;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 80%;
+      margin: 0 auto;
+      margin-top: 100px;
+    }
+
+    form label,
+    form input,
+    form button {
+      margin-bottom: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    form input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form button {
+      padding: 10px 117px;
+      background-color: #170051;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    form button:hover {
+      background-color: #005114;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: #ffffff;
+      font-size: 14px;
+      width: 80%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .contact-details {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href='/'>Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+    <h1>Injection Moulding Estimator</h1>
+  </header>
+  
+  <form action="/injectionmoulding/generate_pdf" method="POST" onsubmit="return validateForm()">
+    <button id="part_number_btn" type="button">Part Number</button>
+    <div id="part_number_input" style="display: none;">
+      <label for="part_number">Part Number:</label>
+      <input type="text" id="part_number" name="part_number">
+      <div id="part_number_error" class="error-message" style="display: none;">Please enter a part number.</div>
+    </div>
+    <button id="estimate_btn" type="button" style="display: none;">Estimate</button>
+    <a href='/partdime'>
+      <button id="dimension_btn" type="button">Part Dimensions</button>
+    </a>
+    <button id="generate_pdf_btn" type="submit" style="display: none;">Generate PDF</button>
+  </form>
+
+  <footer>
+    <div class="contact-details">
+      <p>Designed by: Dev Gyan Priyadarshi</p>
+    </div>
+  </footer>
+
+  <script>
+    const partNumberBtn = document.getElementById("part_number_btn");
+    const dimensionBtn = document.getElementById("dimension_btn");
+    const estimateBtn = document.getElementById("estimate_btn");
+    const partNumberInput = document.getElementById("part_number_input");
+    const generatePdfBtn = document.getElementById("generate_pdf_btn");
+    const partNumberError = document.getElementById("part_number_error");
+    const form = document.querySelector("form");
+
+    function validateForm() {
+      const partNumberValue = partNumberInput.querySelector("input").value;
+
+      if (partNumberValue === "") {
+        partNumberError.style.display = "block";
+        return false; // Prevent the form submission
+      } else {
+        partNumberError.style.display = "none";
+        return true; // Allow the form submission to proceed
+      }
+    }
+
+    partNumberBtn.addEventListener("click", function() {
+      partNumberInput.style.display = "block";
+      estimateBtn.style.display = "block";
+      generatePdfBtn.style.display = "block";
+      dimensionBtn.style.display = "none"; // Hide the Part Dimensions button
+
+      partNumberBtn.style.backgroundColor = "#4CAF50"; // Change the button color to green
+      dimensionBtn.style.backgroundColor = ""; // Reset the button color
+    });
+
+    estimateBtn.addEventListener("click", function() {
+      const partNumberValue = document.getElementById("part_number").value;
+
+      if (partNumberValue === "") {
+        partNumberError.style.display = "block";
+      } else {
+        partNumberError.style.display = "none";
+        location.href = "injectionmoulding/iestimate";
+      }
+    });
+  </script>
+
+</body>
+</html>

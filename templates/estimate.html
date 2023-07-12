@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: rgb(0, 0, 0);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px;
+        }
+
+        .header a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: rgb(0, 0, 0);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total-cost {
+            font-size: 24px;
+            font-weight: bold;
+            background-color: rgba(57, 113, 82, 0.795);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href='/'>Home</a>
+        <a href=/about>About</a>
+    </div>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Cost</th>
+            </tr>
+            <tr>
+                <td>Design Cost</td>
+                <td id="designCost"></td>
+            </tr>
+            <tr>
+                <td>RM Cost</td>
+                <td id="rmCost"></td>
+            </tr>
+            <tr>
+                <td>Process Cost</td>
+                <td id="processCost"></td>
+            </tr>
+            <tr>
+                <td>Profit and Overhead Cost</td>
+                <td id="profitOverheadCost"></td>
+            </tr>
+            <tr>
+                <td class="total-cost" colspan="2" id="totalCost"></td>
+            </tr>
+        </table>
+
+        <div>
+            <button onclick="downloadDetailedPDF()">Get a Detailed PDF</button>
+            <button onclick="downloadInfographicPDF()">Get an Infographic</button>
+        </div>
+        <div>
+            <button onclick="downloadCompleteExcel()">Click to download complete Cost breakup Excel sheet</button>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve the values from the Flask API and update the HTML elements
+        fetch('/dashboard')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("designCost").innerText = data.designCost;
+                document.getElementById("rmCost").innerText = data.rmCost;
+                document.getElementById("processCost").innerText = data.processCost;
+                document.getElementById("profitOverheadCost").innerText = data.profitOverheadCost;
+                document.getElementById("totalCost").innerText = data.totalCost;
+            })
+            .catch(error => console.error(error));
+
+        // Function to download the detailed PDF
+        function downloadDetailedPDF() {
+            fetch('/convert_excel_to_pdf')
+        }
+
+        // Function to download the infographic PDF
+        function downloadInfographicPDF() {
+            window.location.href = 'infographics.html';
+        }
+
+        // Function to download the complete Cost breakup Excel sheet with passcode verification
+        function downloadCompleteExcel() {
+            var passcode = prompt("Enter the passcode:");
+            if (passcode === "1234") {
+                window.location.href = '/download_complete_excel';
+            } else {
+                alert("Invalid passcode. Access denied.");
+            }
+        }
+    </script>
+</body>
+</html>

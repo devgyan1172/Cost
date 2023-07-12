@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>New Part Entry</title>
+  <style>
+     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("C:/Users/Dev Gyan Priyadarshi/Desktop/TVSM OFFICE/Tool Cost Estimator Program/Logo and Image/Ronin.jpg");
+      background-size: cover;
+      background-position: center;
+     
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>New Part Entry</h1>
+
+    <form id="newPartForm">
+      <label for="partNumber">Part Number:</label>
+      <input type="text" id="partNumber" name="partNumber" required>
+
+      <label for="partName">Part Name:</label>
+      <input type="text" id="partName" name="partName" required>
+
+      <label for="length">Length (mm):</label>
+      <input type="text" id="length" name="length" required>
+
+      <label for="width">Width (mm):</label>
+      <input type="text" id="width" name="width" required>
+
+      <label for="height">Height (mm):</label>
+      <input type="text" id="height" name="height" required>
+
+      <label for="complexity">Complexity:</label>
+      <select id="complexity" name="complexity" required>
+        <option value="">Select Complexity</option>
+        <option value="0.5">0.5</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <p class="hyperlink">
+        <a href="comp_guid" target="_blank">Click here for factor details</a>
+      </p>
+      <label for="cavity">Cavity:</label>
+      <select id="cavity" name="cavity" required>
+        <option value="">Select No of cavity</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+        <option value="6">6</option>
+        <option value="8">8</option>
+      </select>
+      <p class="hyperlink">
+        <a href="/cavity" target="_blank">Click here to calculate cavity</a>
+      </p>
+    </form>
+
+    <button id="updateData" onclick="updateData()">Add Entry</button>
+    <button id="partSearch" onclick="partSearch()">Part Search</button>
+    <button id="saveEntryBtn" onclick="saveEntry()">Save Entry</button>
+    <button id="deleteEntryBtn" onclick="deleteEntry()">Delete Entry</button>
+    
+
+    <div id="partDetails" style="display: none;">
+      <button onclick="updateEntry()">Update Data</button>
+      <h2>Part Details</h2>
+      <p id="partNumber"></p>
+      <p id="partName"></p>
+      <p id="length"></p>
+      <p id="width"></p>
+      <p id="height"></p>
+      <p id="complexity"></p>
+      <p id="cavity"></p>
+    </div>
+
+    </main>
+    
+<script>
+document.getElementById("saveEntryBtn").style.display = "none";
+document.getElementById("deleteEntryBtn").style.display = "none";
+
+function partSearch() {
+  // Retrieve the part number
+  var partNumber = document.getElementById("partNumber").value;
+
+  // Send an HTTP POST request to the part_search endpoint
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/partentry/part_search", true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  // Set the part number as the request body
+  var data = JSON.stringify({ partNumber: partNumber });
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // Request successful, display the response message
+      var response = JSON.parse(xhr.responseText);
+      displayPartDetails(response);
+    } else if (xhr.readyState === 4 && xhr.status === 400) {
+      // Request failed, display the error message
+      var response = JSON.parse(xhr.responseText);
+      alert(response.message);
+    }
+  };
+
+  // Send the request
+  xhr.send(data);
+}
+
+function displayPartDetails(partData) {
+  // Hide the form and buttons
+  document.getElementById("newPartForm").style.display = "none";
+  document.getElementById("partDetails").style.display = "block";
+  document.getElementById("partDetails").innerHTML = "";
+  document.getElementById("saveEntryBtn").style.display = "block";
+  document.getElementById("deleteEntryBtn").style.display = "block";
+  document.getElementById("updateData").style.display = "none";
+  document.getElementById("partSearch").style.display = "none";
+
+  // Create HTML elements to display the part details as editable fields
+  var partNumberInput = createInputElement("partNumber", "text", partData["Part Number"]);
+  var partNameInput = createInputElement("partName", "text", partData["Part Name"]);
+  var lengthInput = createInputElement("length", "text", partData["Length"]);
+  var widthInput = createInputElement("width", "text", partData["Width"]);
+  var heightInput = createInputElement("height", "text", partData["Height"]);
+  var complexityInput = createSelectElement("complexity", [
+    { value: "0.5", label: "0.5" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" }
+  ], partData["Complexity"]);
+  var cavityInput = createSelectElement("cavity", [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "4", label: "4" },
+    { value: "6", label: "6" },
+    { value: "8", label: "8" }
+  ], partData["Cavity"]);
+
+  // Append the input fields to the partDetails div
+  appendToPartDetails(partNumberInput);
+  appendToPartDetails(partNameInput);
+  appendToPartDetails(lengthInput);
+  appendToPartDetails(widthInput);
+  appendToPartDetails(heightInput);
+  appendToPartDetails(complexityInput);
+  appendToPartDetails(cavityInput);
+}
+
+function createInputElement(id, type, value) {
+  var input = document.createElement("input");
+  input.id = id;
+  input.name = id;
+  input.type = type;
+  input.value = value;
+  input.required = true;
+  input.classList.add("editable-input");
+  return input;
+}
+
+function createSelectElement(id, options, selectedValue) {
+  var select = document.createElement("select");
+  select.id = id;
+  select.name = id;
+  select.required = true;
+  select.classList.add("editable-input");
+
+  options.forEach(function (optionData) {
+    var option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.label;
+    if (optionData.value === selectedValue) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+
+  return select;
+}
+
+function appendToPartDetails(element) {
+  document.getElementById("partDetails").appendChild(element);
+}
+
+
+function saveEntry() {
+  // Retrieve the form values
+  var partNumber = document.getElementById("partNumber").value;
+  var partName = document.getElementById("partName").value;
+  var length = document.getElementById("length").value;
+  var width = document.getElementById("width").value;
+  var height = document.getElementById("height").value;
+  var complexity = document.getElementById("complexity").value;
+  var cavity = document.getElementById("cavity").value;
+
+  // Perform data validation
+  // if (partNumber && partName && length && width && height && complexity && cavity) {
+    // Send an HTTP POST request to the update_data endpoint
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/partentry/part_search/save_entry", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // Set the form data as the request body
+    var data = "partNumber=" + encodeURIComponent(partNumber) +
+      "&partName=" + encodeURIComponent(partName) +
+      "&length=" + encodeURIComponent(length) +
+      "&width=" + encodeURIComponent(width) +
+      "&height=" + encodeURIComponent(height) +
+      "&complexity=" + encodeURIComponent(complexity) +
+      "&cavity=" + encodeURIComponent(cavity);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        // Request successful, display the response message
+        var response = JSON.parse(xhr.responseText);
+        alert(response.message);
+
+        // Refresh the part details with the updated data
+        partSearch();
+      } else if (xhr.readyState === 4 && xhr.status === 400) {
+        // Request failed, display the error message
+        var response = JSON.parse(xhr.responseText);
+        alert(response.message);
+      }
+    };
+
+    // Send the request
+    xhr.send(data);
+  // } else {
+  //   alert("Please fill in all the required fields.");
+  // }
+}
+
+
+
+function updateData() {
+    // Retrieve the form values
+    var partNumber = document.getElementById("partNumber").value;
+    var partName = document.getElementById("partName").value;
+    var length = document.getElementById("length").value;
+    var width = document.getElementById("width").value;
+    var height = document.getElementById("height").value;
+    var complexity = document.getElementById("complexity").value;
+    var cavity = document.getElementById("cavity").value;
+
+    // Perform data validation
+    if (partNumber && partName && length && width && height && complexity && cavity) {
+        // Send an HTTP POST request to update_data endpoint
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/partentry/update_data", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        // Set the form data as the request body
+        var data = "partNumber=" + encodeURIComponent(partNumber) +
+            "&partName=" + encodeURIComponent(partName) +
+            "&length=" + encodeURIComponent(length) +
+            "&width=" + encodeURIComponent(width) +
+            "&height=" + encodeURIComponent(height) +
+            "&complexity=" + encodeURIComponent(complexity) +
+            "&cavity=" + encodeURIComponent(cavity);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Request successful, display the response message
+                var response = JSON.parse(xhr.responseText);
+                alert(response.message);
+            } else if (xhr.readyState === 4 && xhr.status === 400) {
+                // Request failed, display the error message
+                var response = JSON.parse(xhr.responseText);
+                alert(response.message);
+            }
+        };
+
+        // Send the request
+        xhr.send(data);
+
+        // Clear the form fields
+        document.getElementById("partNumber").value = "";
+        document.getElementById("partName").value = "";
+        document.getElementById("length").value = "";
+        document.getElementById("width").value = "";
+        document.getElementById("height").value = "";
+        document.getElementById("complexity").value = "";
+        document.getElementById("cavity").value = "";
+    } else {
+        alert("Please fill in all the required fields.");
+    }
+}
+function deleteEntry() {
+  var partNumber = document.getElementById("partNumber").value;
+
+  // Send an HTTP POST request to delete_entry endpoint
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/partentry/part_search/delete_entry", true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  // Set the part number as the request body
+  var data = "partNumber=" + encodeURIComponent(partNumber);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      // Request successful, display the response message
+      var response = JSON.parse(xhr.responseText);
+      alert(response.message);
+      clearForm();
+    } else if (xhr.readyState === 4 && xhr.status === 400) {
+      // Request failed, display the error message
+      var response = JSON.parse(xhr.responseText);
+      alert(response.message);
+    }
+  };
+
+  // Send the request
+  xhr.send(data);
+}
+    
+      
+// can be deleted in future (no use)
+// function partSearch() {
+//   // Retrieve the form values
+//   var partNumber = document.getElementById("partNumber").value;
+
+//   // Send an HTTP POST request to the part_search endpoint
+//   var xhr = new XMLHttpRequest();
+//   xhr.open("POST", "/partentry/part_search", true);
+//   xhr.setRequestHeader("Content-Type", "application/json");
+
+//   // Set the part number as the request body
+//   var data = JSON.stringify({ partNumber: partNumber });
+
+//   xhr.onreadystatechange = function () {
+//     if (xhr.readyState === 4 && xhr.status === 200) {
+//       // Request successful, display the response message
+//       var response = JSON.parse(xhr.responseText);
+//       displayPartDetails(response);
+//     } else if (xhr.readyState === 4 && xhr.status === 400) {
+//       // Request failed, display the error message
+//       var response = JSON.parse(xhr.responseText);
+//       alert(response.message);
+//     }
+//   };
+
+//   // Send the request
+//   xhr.send(data);
+// }
+    </script>
+    </body>
+    </html>
+    
