@@ -3,7 +3,7 @@ from flask_cors import CORS
 import openpyxl
 import xlwings as xw
 import shutil
-import win32com.client as win32
+#import win32com.client as win32
 import pythoncom
 from openpyxl import load_workbook
 import win32com.client 
