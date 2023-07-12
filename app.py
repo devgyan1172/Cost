@@ -6,7 +6,7 @@ import shutil
 #import win32com.client as win32
 #import pythoncom
 from openpyxl import load_workbook
-import win32com.client 
+#import win32com.client 
 import pandas as pd
 import numpy as np
 
