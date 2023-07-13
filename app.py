@@ -121,13 +121,26 @@ def generate_pdf():
 
     # Save the changes to the Excel file
     workbook.save('Excel Files/Auto_iNJECTION MOULDING.xlsx')
+input_excel_path = r'\Excel Files\Auto_iNJECTION MOULDING.xlsx'
+output_pdf_path = r'\Excel Files\Cost Estimation.pdf'
+def convert_excel_to_pdf(input_excel_path, output_pdf_path):
+    # Load the Excel file using pandas
+    df = pd.read_excel(input_excel_path)
 
+    # Save the DataFrame as a PDF using openpyxl
+    writer = pd.ExcelWriter(output_pdf_path, engine='openpyxl')
+    df.to_excel(writer, sheet_name='DASHBOARD', index=False)
+    writer.save()
+
+    # Close the writer
+    writer.close()
     # Convert the Excel file to PDF using an alternative library or tool
+    input_excel_path = 'Excel Files/Auto_iNJECTION MOULDING.xlsx'
+    output_pdf_path = 'Excel Files/Cost Estimation.pdf'
+    convert_excel_to_pdf(input_excel_path, output_pdf_path)
 
     # Return the generated PDF file as a response
-    return send_file('path_to_generated_pdf.pdf', as_attachment=True)
-
-# Part Dimension Website
+    return send_file(output_pdf_path, as_attachment=True)
 
 @app.route('/partdime')
 def partdime():
@@ -185,7 +198,7 @@ def calculate():
 
     # Update Excel file using openpyxl
     excel_file = "Excel Files/cavity calculation.xlsx"
-    workbook = openpyxl.load_workbook(excel_file)
+    workbook = load_workbook(excel_file)
     sheet = workbook['InputOutput']
     sheet['B1'] = dailyRequirements
     sheet['B2'] = hoursPerShift
@@ -198,22 +211,16 @@ def calculate():
     workbook.save(excel_file)
     workbook.close()
 
-    # Load the Excel file using xlwings
-    workbook = xw.Book(excel_file)
-    sheet = workbook.sheets['InputOutput']
+    # Load the updated Excel file using pandas
+    df = pd.read_excel(excel_file, sheet_name='InputOutput')
 
-    # Retrieve the formula from cell B7
-    formula_cell = "B7"
-    formula = sheet.range(formula_cell).formula
+    # Retrieve the formula result from the DataFrame
+    result = df.loc[0, 'Number of Cavity']
 
-    # Calculate the value of the formula
-    result = sheet.range(formula_cell).value
-
-    # Close the workbook
-    workbook.close()
-
+   
     # Return the response as JSON
     return {'numberOfCavity': str(result)}
+
 @app.route('/comp_guid')
 def comp_guid():
     return render_template('comp_guid.html')
