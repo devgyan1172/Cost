@@ -187,7 +187,7 @@ def save_data():
         form_data = request.get_json()
 
         # Load the Excel workbook
-        workbook = load_workbook('Excel Files\Part Dimensions.xlsx')
+        workbook = load_workbook('templates/Excel Files/Part Dimensions.xlsx')
 
         # Get the active sheet
         sheet = workbook.active
@@ -206,7 +206,7 @@ def save_data():
         sheet['B11'] = form_data['polishing']
 
         # Save the workbook
-        workbook.save('Excel Files\Part Dimensions.xlsx')
+        workbook.save('templates/Excel Files/Part Dimensions.xlsx')
 
         # Return a JSON response indicating success
         return jsonify({'message': 'Form data saved successfully!'})
