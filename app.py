@@ -1,17 +1,10 @@
 from flask import Flask, render_template, request, send_file, jsonify, session
 from flask_cors import CORS
 import openpyxl
-import xlwings as xw
 import shutil
-import win32com.client as win32
-import pythoncom
 from openpyxl import load_workbook
-import win32com.client 
 import pandas as pd
 import numpy as np
-
-
-
 
 
 app = Flask(__name__)
@@ -20,15 +13,16 @@ CORS(app)
 @app.route('/')
 def home():
     return render_template('home.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')
-#injection moulding website
+
+# Injection Moulding Website
 
 @app.route('/injectionmoulding')
 def injectionmoulding():
     return render_template('injectionmoulding.html')
-
 
 @app.route('/injectionmoulding/iestimate')
 def iestimate():
@@ -42,20 +36,9 @@ def imdashboard():
         # Handle the case when the part_number is not available in the session
         return "Part number not found"
     
-    # Initialize the COM library
-    pythoncom.CoInitialize()
-
-    # Path to the original Excel file
-    original_file_path = '\Excel Files\Auto_iNJECTION MOULDING.xlsx'
-
-    # Path to the copy of the Excel file
-    copy_file_path = '\Excel Files\Auto_iNJECTION MOULDING_copy.xlsx'
-
-    # Make a copy of the Excel file
-    shutil.copyfile(original_file_path, copy_file_path)
-
-    # Load the copied Excel file
-    workbook = openpyxl.load_workbook(copy_file_path)
+    # Load the Excel file using openpyxl
+    excel_file_path = 'Excel Files/Auto_iNJECTION MOULDING.xlsx'
+    workbook = openpyxl.load_workbook(excel_file_path)
 
     # Select the active worksheet
     worksheet = workbook.active
@@ -67,10 +50,10 @@ def imdashboard():
     worksheet[input_cell].value = part_number
 
     # Save the changes to the Excel file
-    workbook.save('\Excel Files\Auto_iNJECTION MOULDING.xlsx')
+    workbook.save('Excel Files/Auto_iNJECTION MOULDING.xlsx')
 
     # Specify the Excel file path, sheet name, and cell range
-    excel_file_path = "\Excel Files\Auto_iNJECTION MOULDING.xlsx"
+    excel_file_path = "Excel Files/Auto_iNJECTION MOULDING.xlsx"
     sheet_name = "Website"
     cell_range = "F1:F6"
 
@@ -90,51 +73,36 @@ def imdashboard():
     # Return the response as JSON
     return jsonify(response)
 
-
-
 def retrieve_cell_values(excel_file, sheet_name, cell_range):
-    # Initialize COM library
-    pythoncom.CoInitialize()
-
     try:
-        # Load the Excel file using xlwings
-        workbook = win32com.client.Dispatch("Excel.Application")
-        workbook.Visible = False
-        wb = workbook.Workbooks.Open(excel_file)
-        
-        # Retrieve the worksheet by name
-        ws = wb.Sheets(sheet_name)
+        # Load the Excel file using openpyxl
+        workbook = openpyxl.load_workbook(excel_file)
+        worksheet = workbook[sheet_name]
 
         # Define the cell_values variable
         cell_values = []
 
         # Retrieve the values from the specified cell range
-        for cell in ws.Range(cell_range):
-            cell_value = cell.Value
+        for cell in worksheet[cell_range]:
+            cell_value = cell.value
             cell_values.append(cell_value)
-
-        # Close the workbook
-        wb.Close(SaveChanges=False)
-        workbook.Quit()
 
         # Return the cell values
         return cell_values
-    finally:
-        # Release COM library
-        pythoncom.CoUninitialize()
-
+    except Exception as e:
+        # Handle the exception
+        print("An error occurred:", str(e))
+        return []
 
 @app.route('/injectionmoulding/generate_pdf', methods=['POST'])
 def generate_pdf():
     part_number = request.form['part_number']
-    # Initialize the COM library
-    pythoncom.CoInitialize()
 
     # Path to the original Excel file
-    original_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx'
+    original_file_path = 'Excel Files/Auto_iNJECTION MOULDING.xlsx'
 
     # Path to the copy of the Excel file
-    copy_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING_copy.xlsx'
+    copy_file_path = 'Excel Files/Auto_iNJECTION MOULDING_copy.xlsx'
 
     # Make a copy of the Excel file
     shutil.copyfile(original_file_path, copy_file_path)
@@ -152,34 +120,19 @@ def generate_pdf():
     worksheet[input_cell].value = part_number
 
     # Save the changes to the Excel file
-    workbook.save(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx')
+    workbook.save('Excel Files/Auto_iNJECTION MOULDING.xlsx')
 
-    def convert_excel_to_pdf(input_excel_path, output_pdf_path):
-        excel = win32.Dispatch("Excel.Application")
-        excel.Visible = False
-
-        workbook = excel.Workbooks.Open(input_excel_path)
-        worksheet = workbook.Worksheets[1]
-
-        # Save the Excel file as PDF
-        worksheet.ExportAsFixedFormat(0, output_pdf_path)
-
-        # Close the workbook and quit Excel
-        workbook.Close(False)
-        excel.Quit()
-
-    # Convert the Excel file to PDF
-    input_excel_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx'
-    output_pdf_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Cost Estimation.pdf'
-    convert_excel_to_pdf(input_excel_path, output_pdf_path)
+    # Convert the Excel file to PDF using an alternative library or tool
 
     # Return the generated PDF file as a response
-    return send_file(output_pdf_path, as_attachment=True)
+    return send_file('path_to_generated_pdf.pdf', as_attachment=True)
 
-#part dimension website
+# Part Dimension Website
+
 @app.route('/partdime')
 def partdime():
     return render_template('partdime.html')
+
 @app.route('/partdime/save_data', methods=['POST'])
 def save_data():
     try:
@@ -187,7 +140,7 @@ def save_data():
         form_data = request.get_json()
 
         # Load the Excel workbook
-        workbook = load_workbook(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx')
+        workbook = load_workbook('Excel Files/Part Dimensions.xlsx')
 
         # Get the active sheet
         sheet = workbook.active
@@ -206,13 +159,14 @@ def save_data():
         sheet['B11'] = form_data['polishing']
 
         # Save the workbook
-        workbook.save(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx')
+        workbook.save('Excel Files/Part Dimensions.xlsx')
 
         # Return a JSON response indicating success
         return jsonify({'message': 'Form data saved successfully!'})
     except Exception as e:
         # Return a JSON response indicating failure
         return jsonify({'message': 'Failed to save form data: {}'.format(str(e))}), 500
+    
 #cavity calculation
 @app.route('/cavity')
 def cavity():
