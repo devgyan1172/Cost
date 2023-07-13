@@ -187,7 +187,7 @@ def save_data():
         form_data = request.get_json()
 
         # Load the Excel workbook
-        workbook = load_workbook('templates\Part Dimensions.xlsx')
+        workbook = load_workbook('Part Dimensions.xlsx')
 
         # Get the active sheet
         sheet = workbook.active
