@@ -3,10 +3,10 @@ from flask_cors import CORS
 import openpyxl
 import xlwings as xw
 import shutil
-#import win32com.client as win32
-#import pythoncom
+import win32com.client as win32
+import pythoncom
 from openpyxl import load_workbook
-#import win32com.client 
+import win32com.client 
 import pandas as pd
 import numpy as np
 
@@ -46,10 +46,10 @@ def imdashboard():
     pythoncom.CoInitialize()
 
     # Path to the original Excel file
-    original_file_path = 'Excel Files\Auto_iNJECTION MOULDING.xlsx'
+    original_file_path = '\Excel Files\Auto_iNJECTION MOULDING.xlsx'
 
     # Path to the copy of the Excel file
-    copy_file_path = 'Excel Files\Auto_iNJECTION MOULDING_copy.xlsx'
+    copy_file_path = '\Excel Files\Auto_iNJECTION MOULDING_copy.xlsx'
 
     # Make a copy of the Excel file
     shutil.copyfile(original_file_path, copy_file_path)
@@ -67,10 +67,10 @@ def imdashboard():
     worksheet[input_cell].value = part_number
 
     # Save the changes to the Excel file
-    workbook.save('Excel Files\Auto_iNJECTION MOULDING.xlsx')
+    workbook.save('\Excel Files\Auto_iNJECTION MOULDING.xlsx')
 
     # Specify the Excel file path, sheet name, and cell range
-    excel_file_path = r"Excel Files\Auto_iNJECTION MOULDING.xlsx"
+    excel_file_path = "\Excel Files\Auto_iNJECTION MOULDING.xlsx"
     sheet_name = "Website"
     cell_range = "F1:F6"
 
@@ -131,10 +131,10 @@ def generate_pdf():
     pythoncom.CoInitialize()
 
     # Path to the original Excel file
-    original_file_path = 'Excel Files\\Auto_iNJECTION MOULDING.xlsx'
+    original_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx'
 
     # Path to the copy of the Excel file
-    copy_file_path = 'Excel Files\\Auto_iNJECTION MOULDING_copy.xlsx'
+    copy_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING_copy.xlsx'
 
     # Make a copy of the Excel file
     shutil.copyfile(original_file_path, copy_file_path)
@@ -152,7 +152,7 @@ def generate_pdf():
     worksheet[input_cell].value = part_number
 
     # Save the changes to the Excel file
-    workbook.save('Excel Files\\Auto_iNJECTION MOULDING.xlsx')
+    workbook.save(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx')
 
     def convert_excel_to_pdf(input_excel_path, output_pdf_path):
         excel = win32.Dispatch("Excel.Application")
@@ -169,8 +169,8 @@ def generate_pdf():
         excel.Quit()
 
     # Convert the Excel file to PDF
-    input_excel_path = 'Excel Files\\Auto_iNJECTION MOULDING.xlsx'
-    output_pdf_path = 'Excel Files\\Cost_Estimation.pdf'
+    input_excel_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx'
+    output_pdf_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Cost Estimation.pdf'
     convert_excel_to_pdf(input_excel_path, output_pdf_path)
 
     # Return the generated PDF file as a response
@@ -187,7 +187,7 @@ def save_data():
         form_data = request.get_json()
 
         # Load the Excel workbook
-        workbook = load_workbook('templates/Part Dimensions.xlsx')
+        workbook = load_workbook(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx')
 
         # Get the active sheet
         sheet = workbook.active
@@ -206,7 +206,7 @@ def save_data():
         sheet['B11'] = form_data['polishing']
 
         # Save the workbook
-        workbook.save('templates/Part Dimensions.xlsx')
+        workbook.save(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx')
 
         # Return a JSON response indicating success
         return jsonify({'message': 'Form data saved successfully!'})
@@ -274,7 +274,7 @@ def estimate():
 @app.route('/dashboard')
 def dashboard():
     # Specify the Excel file path, sheet name, and cell range
-    excel_file_path = r"Excel Files\\Part Dimensions.xlsx"
+    excel_file_path =r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx'
     sheet_name = "Website"
     cell_range = "F1:F5"
 
@@ -329,7 +329,7 @@ def retrieve_cell_values(excel_file, sheet_name, cell_range):
 @app.route('/convert_excel_to_pdf')
 def convert_excel_to_pdf():
     # Specify the path of the Excel file
-    excel_file_path = r"Excel Files\\Part Dimensions.xlsx"
+    excel_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx'
 
     # Convert Excel to PDF
     pdf_file_path = convert_excel_to_pdf(excel_file_path)
@@ -340,7 +340,7 @@ def convert_excel_to_pdf():
 @app.route('/download_complete_excel')
 def download_complete_excel():
     # Specify the path of the Excel file
-    excel_file_path = r"Excel Files\\Part Dimensions.xlsx"
+    excel_file_path = r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Part Dimensions.xlsx'
 
     # Return the Excel file for download
     return send_file(excel_file_path, as_attachment=True)
@@ -349,10 +349,42 @@ def download_complete_excel():
 @app.route('/database')
 def database():
     return render_template('database.html')
-@app.route('/database/materialupdate')
+@app.route('/materialupdate')
 def materialupdate():
-    return render_template('materialupdate.html')
+    # Load the Excel workbook
+    workbook = load_workbook(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx')
 
+    # Get the active sheet
+    sheet = workbook['Database']
+
+    # Retrieve the data from cells C3 to D16
+    tool_steel_data = []
+    for row in sheet.iter_rows(min_row=3, max_row=16, min_col=1, max_col=4):
+        row_data = [cell.value for cell in row]
+        tool_steel_data.append(row_data)
+
+    # Retrieve the data from cells A19 to E27
+    other_data = []
+    for row in sheet.iter_rows(min_row=19, max_row=27, min_col=1, max_col=5):
+        row_data = [cell.value for cell in row]
+        other_data.append(row_data)
+
+    return render_template('materialupdate.html', tool_steel_data=tool_steel_data, other_data=other_data)
+@app.route('/machiningupdate')
+def machiningupdate():
+    # Load the Excel workbook
+    workbook = load_workbook(r'C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\Auto_iNJECTION MOULDING.xlsx')
+
+    # Get the active sheet
+    sheet = workbook['Database']
+
+    # Retrieve the data from cells
+    machining_update = []
+    for row in sheet.iter_rows(min_row=3, max_row=17, min_col=9, max_col=11):
+        row_data = [cell.value for cell in row]
+        machining_update.append(row_data)
+    return render_template('machining update.html', machining_update=machining_update)
+    
 @app.route('/partentry')
 def partentry():
     return render_template('partentry.html')
@@ -435,7 +467,7 @@ def add_new_row(part_number, part_name, length, width, height, complexity, cavit
 @app.route("/partentry/part_search", methods=["POST"])
 def part_search():
     part_number = request.json["partNumber"]
-    excel_file_path = r"Excel Files\\PartDatabase.xlsx"
+    excel_file_path = r"C:\Users\Dev Gyan Priyadarshi\Desktop\TVSM OFFICE\Tool Cost Estimator Program\Website under cooking\Excel Files\PartDatabase.xlsx"
     df = pd.read_excel(excel_file_path)
     # Search for the part number in the DataFrame
     result = df[df["Part Number"] == part_number]
